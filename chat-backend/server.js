@@ -16,17 +16,12 @@ const server = http.createServer(app);
 
 const io = socketIO(server, {
     cors: {
-        origin: 'http://localhost:3000',
-        methods: ["GET", "POST"],
-        credentials: true,
+        origin: '*',
     },
 });
 
 app.use(express.json());
-app.use(cors( {
-    origin: 'http://localhost:3000',
-    credentials: true,
-}));
+app.use(cors());
 
 const mongoURI = process.env.MONGODB_URI
 
@@ -34,15 +29,15 @@ mongoose.connect(mongoURI).then(() => {
     console.log('Connected to MongoDB Atlas');
 }).catch((error) => {
     console.log('MongoDB Atlas connection error:', error);
-})
+});
 
 io.on('connection', (socket) => {
     console.log('New client connected');
-    socket.on('joinRoom', async ({room}) => {
+    socket.on('joinRoom', async ({ room }) => {
         socket.join(room)
 
-        const messages = await Message.find({room})
-        .sort({timestamp: -1})
+        const messages = await Message.find({ room })
+        .sort({ timestamp: -1 })
         .limit(20)
         .populate('user', 'username')
 
@@ -64,6 +59,8 @@ io.on('connection', (socket) => {
         await newMessage.save();
 
         await newMessage.populate('user', 'username');
+
+        io.to(room).emit('newMessage', newMessage);
     });
 
     socket.on('disconnect', () => {

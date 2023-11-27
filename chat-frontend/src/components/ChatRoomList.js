@@ -5,11 +5,12 @@ const ChatRoomList = ({rooms, joinRoom}) => {
         <div>
             <h2>Chat Rooms</h2>
             <ul>
-                {rooms.map((room, i) => (
-                    <li key={i}>
+                {rooms.map((room, index) => (
+                    <li key={index}>
                         <button
                             onClick={() => joinRoom(room)}
-                            >Join {room}</button>
+                            >Join {room}
+                        </button>
                     </li>
                 ))}
             </ul>

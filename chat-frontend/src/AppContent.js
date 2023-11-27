@@ -7,8 +7,10 @@ import MessageInput from './components/MessageInput';
 import LoginForm from './components/Login';
 import SignupForm from './components/Signup';
 import AuthContext from './components/AuthContext';
+import background from './cyberpunk-bg-image.jpg'
 
-const socket = io('http://localhost:8000');
+// initialize Socket.io client
+const socket = io('http://localhost:5000');
 
 function AppContent() {
     const [rooms, setRooms] = useState(['General', 'Games', 'Coding', 'Knitting'])
@@ -25,7 +27,7 @@ function AppContent() {
             })
 
             socket.on('newMessage', (message) => {
-                setMessages((prevMessages) => [message, ...prevMessages])
+                setMessages((prevMessages) => [...prevMessages, message])
             })
 
             socket.on('previousMessages', (previousMessages) => {
@@ -39,6 +41,7 @@ function AppContent() {
             socket.off('connect');
             socket.off('newMessage');
             socket.off('previousMessages');
+            socket.off('updateUsersList');
         };
     }, [isAuthenticated]);
 
@@ -62,59 +65,66 @@ function AppContent() {
     }
 
     // Logout
-    const handleLogout = (token, username) => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('username')
-        setIsAuthenticated(false)
-        setToken(null)
-        setUsername(null)
-        socket.disconnect()
-    }
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        setToken(null);
+        setUsername(null);
+        setIsAuthenticated(false);
+        socket.disconnect();
+    };
 
     // Join Chat
     const joinRoom = (room) => {
-        setCurrentRoom(room)
-        socket.emit('joinRoom', {room})
-    }
+        setCurrentRoom(room);
+        socket.emit('joinRoom', { room });
+    };
 
     // Send Message
     const sendMessage = (message) => {
-        if(token) {
-            const decodedToken = jwtDecode(token)
-            const userId = decodedToken.userId
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
             
-            socket.emit('sendMessage', {room: currentRoom, message, userId})
+            socket.emit('sendMessage', { room: currentRoom, message, userId });
         }
     }
 
     return (
-        <div className='App'>
+        <div className='background' style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+            <div className='min-h-screen flex justify-center items-center p-4'>
+            <div className='App w-full md:w-1/2 bg-white bg-opacity-30 backdrop-blur-sm p-4 rounded-lg shadow-xl text-white'>
             {isAuthenticated ? (
-                <>
-                  <span>Welcome, {username}</span>
+                <div className="flex w-full">
+                  <h1 className="text-3xl font-bold mb-6">Welcome, {username}</h1>
                   <button onClick={handleLogout}>Logout</button>
-                  <ChatRoomList 
-                    rooms={rooms}
-                    joinRoom={joinRoom}
-                  />
-                  {currentRoom && (
-                    <>
-                        <h1>Current Room: {currentRoom}</h1>
-                        <MessageList messages={messages} />
-                        <MessageInput sendMessage={sendMessage} />                        
-                    </>
-                  )}
-                </>
+                  <div className="w-1/4 p-4 bg-gray-800 text-white">
+                    <ChatRoomList 
+                      rooms={rooms}
+                      joinRoom={joinRoom}
+                    />
+                  </div>
+                  <div className="w-1/2 p-4 flex flex-col">
+                    {currentRoom && (
+                      <>
+                          <h1>Current Room: {currentRoom}</h1>
+                          <MessageList messages={messages} />
+                          <MessageInput sendMessage={sendMessage} />                        
+                      </>
+                    )}
+                  </div>  
+                </div>
             ) : (
-                <>
-                  <h1>Login</h1>
-                  <LoginForm onLogin={handleLogin} />
-                  <h1>Signup</h1>
-                  <SignupForm onSignup={handleSignup} />
-                </>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <h1 className="text-3xl font-bold mb-6">Welcome to Chat App</h1>
+                    <LoginForm onLogin={handleLogin} />
+                    <SignupForm onSignup={handleSignup} />
+                </div>
             )}
+            </div>
+            </div>
         </div>
     )
 }
 
-export default AppContent
+export default AppContent;
