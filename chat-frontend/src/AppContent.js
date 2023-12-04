@@ -92,36 +92,45 @@ function AppContent() {
 
     return (
         <div className='background' style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-            <div className='min-h-screen flex justify-center items-center p-4'>
-            <div className='App w-full md:w-1/2 bg-white bg-opacity-30 backdrop-blur-sm p-4 rounded-lg shadow-xl text-white'>
-            {isAuthenticated ? (
-                <div className="flex w-full">
-                  <h1 className="text-3xl font-bold mb-6">Welcome, {username}</h1>
-                  <button onClick={handleLogout}>Logout</button>
-                  <div className="w-1/4 p-4 bg-gray-800 text-white">
-                    <ChatRoomList 
-                      rooms={rooms}
-                      joinRoom={joinRoom}
-                    />
-                  </div>
-                  <div className="w-1/2 p-4 flex flex-col">
-                    {currentRoom && (
-                      <>
-                          <h1>Current Room: {currentRoom}</h1>
-                          <MessageList messages={messages} />
-                          <MessageInput sendMessage={sendMessage} />                        
-                      </>
-                    )}
-                  </div>  
+            <div className='min-h-screen flex justify-center items-center p-4 object-contain'>
+                <div className='App w-full md:w-1/2 bg-gray-800 bg-opacity-60 backdrop-blur-sm p-4 rounded-lg shadow-md text-white'>
+                    <div className='star-container rounded-lg'>
+                        <span className='star'></span>
+                    </div>
+                    
+                    
+                {isAuthenticated ? (
+                    <main className="flex flex-col w-full">
+                        <header className='header flex flex-row'>
+                            <h1 className="text-3xl font-bold mb-6">Welcome, {username}</h1>
+                             <button onClick={handleLogout}>Logout</button>
+                        </header>
+                        <div className='content flex flex-row'>
+                            <div className="w-1/4 p-4 bg-gray-800 p-4 rounded-lg shadow-md text-white">
+                              <ChatRoomList 
+                                rooms={rooms}
+                                joinRoom={joinRoom}
+                              />
+                            </div>
+                            <div className="w-full p-4 flex flex-col object-contain">
+                              {currentRoom && (
+                                <>
+                                    <h1 className='text-xl'>Current Room: {currentRoom}</h1>
+                                    <MessageList messages={messages} />
+                                    <MessageInput sendMessage={sendMessage} />                        
+                                </>
+                              )}
+                            </div> 
+                        </div> 
+                    </main>
+                ) : (
+                    <div className="flex flex-col justify-center items-center w-full">
+                        <h1 className="text-3xl font-bold mb-6">Welcome to Chat App</h1>
+                        <LoginForm onLogin={handleLogin} />
+                        <SignupForm onSignup={handleSignup} />
+                    </div>
+                )}
                 </div>
-            ) : (
-                <div className="flex flex-col justify-center items-center w-full">
-                    <h1 className="text-3xl font-bold mb-6">Welcome to Chat App</h1>
-                    <LoginForm onLogin={handleLogin} />
-                    <SignupForm onSignup={handleSignup} />
-                </div>
-            )}
-            </div>
             </div>
         </div>
     )

@@ -16,3 +16,50 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* Border Animation */
+.star-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  z-index: 2;
+}
+
+.star {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: cyan;
+  box-shadow: 0 0 10px 2px RGB(17, 221, 221),
+    0 0 40px 4px RGB(17, 221, 221),
+    0 0 60px 6px RGB(17, 221, 221),
+    0 0 80px 8px RGB(17, 221, 221),
+    0 0 100px 10px RGBa(17, 221, 221, 0.5);
+  animation: animate 2s ease-in forwards;  
+}
+
+@keyframes animate {
+  0% {
+    left: 0.5%; 
+  }
+  99% {
+    left: 99.5%;
+    opacity: 1;
+  }
+  100% {
+    left: 99.5%;
+    opacity: 0;
+  }
+}
+
+
+
+

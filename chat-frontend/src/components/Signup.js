@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Input from './Input';
 
 const SignupForm = ({onSignup}) => {
     const [username, setUsername] = useState('');
@@ -22,26 +23,26 @@ const SignupForm = ({onSignup}) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
+        <form onSubmit={handleSubmit} className="flex flex-col">
+            <Input
                 type='text'
                 placeholder='Username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 />
-                <input
+            <Input
                 type='email'
                 placeholder='Email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 />
-            <input
+            <Input
                 type='password'
                 placeholder='Password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type='submit'>Sign Up</button>
+                <button type='submit' className="text-sm mx-2 px-4 py-2 bg-gradient-to-b from-cyan-500 to-blue-700 border-b-2 border-blue-700 text-white rounded-lg shadow-md hover:from-cyan-600 hover:to-blue-700 active:shadow-inner focus:outline-none transition duration-150 ease-in-out">Sign Up</button>
         </form>
     )
 
